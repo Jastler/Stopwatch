@@ -1,23 +1,48 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import './App.css';
 
+
 function App() {
+  const [second, setSecond] = useState(0);
+  const [minute, setMinute] = useState(0)
+
+  useEffect(() => {
+    const stream$ = new Observable(observer => {
+      setInterval(() => {
+        observer.next(second + 1)
+        console.log(second) 
+      }, 1000);
+      setTimeout(() => {
+        observer.complete(); 
+      }, 5000);
+    })
+
+    stream$
+    .subscribe((el) => {
+      setSecond(el)
+    });
+  }, [second]);
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Stopwatch</h1>
+      <div>
+        <span>
+        {minute < 10 ? (
+            `0${minute}`
+          ) : (
+            minute
+          )}
+          {' : '}
+          {second < 10 ? (
+            `0${second}`
+          ) : (
+            second
+          )}
+        </span>
+      </div>
     </div>
   );
 }
